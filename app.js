@@ -40,6 +40,36 @@ app.get('/error/:code', function(req, res) {
 	} else {
 		res.send(500, 'Unable to parse error code request.');
 	}
+});
+
+app.get('/up/*', function(req, res) {
+	var url = req.params[0];
+	console.log(req.params);
+	if (url) {
+		var correctedUrl = 'http://'+url;
+		// console.log(correctedUrl);
+		try {
+			http.get(correctedUrl, function(nRes) {
+				// console.log(nRes);
+				res.json({
+					code: nRes.statusCode,
+					response: {
+						headers: nRes.headers
+					}
+				});
+			}).on('error', function(e) {
+				res.json(500, {
+					code: 500,
+					message: 'Domain not found.',
+					rawErrors: e
+				});
+			})
+		} catch(e) {
+			res.json(500, e);
+		}
+	} else {
+		res.send(500, 'Unable to parse url.')
+	}
 })
 
 http.createServer(app).listen(app.get('port'), function(){
