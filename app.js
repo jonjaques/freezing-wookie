@@ -42,33 +42,37 @@ app.get('/error/:code', function(req, res) {
 	}
 });
 
-app.get('/up/*', function(req, res) {
+app.get('/status/*', function(req, res) {
 	var url = req.params[0];
-	console.log(req.params);
 	if (url) {
-		var correctedUrl = 'http://'+url;
-		// console.log(correctedUrl);
+		var correctedUrl = url;
 		try {
 			http.get(correctedUrl, function(nRes) {
-				// console.log(nRes);
 				res.json({
-					code: nRes.statusCode,
+					success: true,
 					response: {
+						code: nRes.statusCode,
 						headers: nRes.headers
 					}
 				});
 			}).on('error', function(e) {
 				res.json(500, {
-					code: 500,
-					message: 'Domain not found.',
+					success: false,
 					rawErrors: e
 				});
 			})
 		} catch(e) {
-			res.json(500, e);
+			res.json(500, {
+				success: false,
+				message: "https protocol is not supported at this time.",
+				rawErrors: e
+			});
 		}
 	} else {
-		res.send(500, 'Unable to parse url.')
+		res.send(500, {
+			success:false,
+			message: 'Unable to parse url.'
+		});
 	}
 })
 
