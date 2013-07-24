@@ -1,0 +1,12 @@
+extends layout
+
+block content
+	h1= title
+	p Get your HTTP responses here!
+
+	form(id="codeRequestor")
+		label(for="reqCode") Request Code
+			br
+			input(id="reqCode", name="code", type="text")
+		br
+		button(type="submit") Go!
